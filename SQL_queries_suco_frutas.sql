@@ -1,6 +1,6 @@
 
---A query analisa o faturamento e participação nas vendas  por produto e sabor, assim como a variação anual das vendas por produto.
---Em seguida, classifica se cada produto vendeu acima ou abaixo da média mensal de faturamento.
+--A query analisa o faturamento e participaÃ§Ã£o nas vendas  por produto e sabor, assim como a variaÃ§Ã£o anual das vendas por produto.
+--Em seguida, classifica se cada produto vendeu acima ou abaixo da mÃ©dia  de faturamento.
 
 WITH TABELA_B AS(
 SELECT
@@ -33,15 +33,15 @@ SELECT
             SELECT AVG(FATURAMENTO_POR_PRODUTO) 
             FROM TABELA_B AS T 
             WHERE T.ANO = TABELA_B.ANO
-        ) THEN 'PRODUTO VENDEU ACIMA DA MÉDIA MENSAL'
-        ELSE 'PRODUTO VENDEU ABAIXO DA MÉDIA MENSAL' 
+        ) THEN 'PRODUTO VENDEU ACIMA DA MÃ‰DIA MENSAL'
+        ELSE 'PRODUTO VENDEU ABAIXO DA MÃ‰DIA MENSAL' 
     END AS STATUS
 FROM 
     TABELA_B
 ORDER BY ANO;
 
 
---Extrair o TOP Vendendedor Anual do período anual de 2016 e 2017, assim como o valor do comissionamento.
+--Extrair o TOP Vendendedor Anual do perÃ­odo anual de 2016 e 2017, assim como o valor do comissionamento.
 
 SELECT * FROM (
 	 SELECT 
@@ -62,14 +62,14 @@ GROUP BY
 	WHERE RANK_VENDAS = 1
 
 
------ Análise de vendas por tipo de embalagem e tamanho.
+----- AnÃ¡lise de vendas por tipo de embalagem e tamanho.
 
 	 SELECT 
     YEAR(NF.DATA_VENDA) AS ANO, 
     P.EMBALAGEM,
 	P.TAMANHO,
     ROUND(SUM([quantidade] * [preco]),2) AS FATURAMENTO_ANUAL,
-	ROUND(AVG(P.PRECO_DE_LISTA),2) AS PREÇO_MEDIO
+	ROUND(AVG(P.PRECO_DE_LISTA),2) AS PREÃ‡O_MEDIO
 FROM 
     [SUCOS_FRUTAS].[dbo].[ITENS_NOTAS_FISCAIS] INF
 LEFT JOIN 
@@ -81,14 +81,14 @@ GROUP BY YEAR(NF.DATA_VENDA), P.EMBALAGEM,	P.TAMANHO
 ORDER BY ANO ASC, FATURAMENTO_ANUAL DESC;
 
 
---A query analisa o faturamento e as unidades vendidas mensalmente ao longo de três anos (2015, 2016, 2017),
---calculando a variação mensal em relação ao mês anterior para ambas as métricas.
+--A query analisa o faturamento e as unidades vendidas mensalmente ao longo de trÃªs anos (2015, 2016, 2017),
+--calculando a variaÃ§Ã£o mensal em relaÃ§Ã£o ao mÃªs anterior para ambas as mÃ©tricas.
 
 
 WITH ANALISE_MENSAL AS (
 SELECT 
     YEAR(NF.DATA_VENDA) AS ANO, 
-    MONTH(NF.DATA_VENDA) AS MÊS,
+    MONTH(NF.DATA_VENDA) AS MÃŠS,
 	ROUND(SUM([quantidade] * [preco]),2)AS FATURAMENTO_MENSAL,
 	ROUND(SUM(SUM([quantidade] * [preco]))OVER (PARTITION BY YEAR(NF.DATA_VENDA)),2) AS FATURAMENTO_ANUAL,
 	SUM([quantidade]) AS UNIDADES_VENDIDAS_MES,
@@ -104,10 +104,10 @@ GROUP BY
   YEAR(NF.DATA_VENDA), MONTH(NF.DATA_VENDA)  
 )
 SELECT ANO,
-MÊS,
+MÃŠS,
 FATURAMENTO_MENSAL,
-ROUND(( FATURAMENTO_MENSAL- LAG(FATURAMENTO_MENSAL) OVER (ORDER BY ANO, MÊS)) / LAG(FATURAMENTO_MENSAL) OVER (ORDER BY ANO, MÊS),2) AS  VARIAÇAO_MENSAL_FATURAMENTO,
+ROUND(( FATURAMENTO_MENSAL- LAG(FATURAMENTO_MENSAL) OVER (ORDER BY ANO, MÃŠS)) / LAG(FATURAMENTO_MENSAL) OVER (ORDER BY ANO, MÃŠS),2) AS  VARIAÃ‡AO_MENSAL_FATURAMENTO,
 UNIDADES_VENDIDAS_MES,
-(UNIDADES_VENDIDAS_MES - LAG (UNIDADES_VENDIDAS_MES) OVER (ORDER BY ANO, MÊS)) DIFF_MENSAL_UNIDADES_VENDIDAS
+(UNIDADES_VENDIDAS_MES - LAG (UNIDADES_VENDIDAS_MES) OVER (ORDER BY ANO, MÃŠS)) DIFF_MENSAL_UNIDADES_VENDIDAS
 FROM ANALISE_MENSAL
-ORDER BY ANO, MÊS
+ORDER BY ANO, MÃŠS
