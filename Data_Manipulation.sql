@@ -53,3 +53,20 @@ SELECT DATEDIFF(day, '2024-03-13', '2024-03-20')
 SELECT DATENAME(datepart, date)
 SELECT DATENAME(month, '2024-03-13') AS MonthName;
 -- depart por ser: ýear,month, dayofyear, day, weekday, week'
+
+-- DATEPART: Retorna uma parte específica de uma data SQL SERVER
+SELECT DATEPART(interval, data)
+--interval é a parte da data que você deseja extrair (por exemplo, "year" para o ano, "month" para o mês, "day" para o dia, etc.).
+SELECT DATEPART(year, [data_venda]) AS Ano
+FROM [dbo].[NOTAS_FISCAIS];
+
+-- DATEFORMAT: Retorna uma data parte esecífica de uma data MYSQL 
+SELECT DATE_FORMAT(NOW(), '%d/%m/%Y') AS DataFormatada;
+-- Isso retornará a data atual formatada como uma string no formato "dd/MM/yyyy".
+
+%Y: Ano com quatro dígitos.
+%m: Mês (01 a 12).
+%d: Dia do mês (01 a 31).
+%H: Hora no formato 24 horas (00 a 23).
+%i: Minutos (00 a 59).
+%s: Segundos (00 a 59).
